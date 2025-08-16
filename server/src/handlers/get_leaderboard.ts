@@ -1,9 +1,21 @@
+import { db } from '../db';
+import { gameSessionsTable } from '../db/schema';
 import { type GameSession } from '../schema';
+import { desc, isNotNull } from 'drizzle-orm';
 
 export async function getLeaderboard(limit: number = 10): Promise<GameSession[]> {
-    // This is a placeholder declaration! Real code should be implemented here.
-    // The goal of this handler is to fetch the top game sessions ordered by
-    // total_score descending, limited to the specified number of results.
-    // Only return completed game sessions (where ended_at is not null).
-    return Promise.resolve([] as GameSession[]);
+  try {
+    // Build query to get completed game sessions ordered by score
+    const results = await db.select()
+      .from(gameSessionsTable)
+      .where(isNotNull(gameSessionsTable.ended_at))
+      .orderBy(desc(gameSessionsTable.total_score))
+      .limit(limit)
+      .execute();
+
+    return results;
+  } catch (error) {
+    console.error('Leaderboard retrieval failed:', error);
+    throw error;
+  }
 }

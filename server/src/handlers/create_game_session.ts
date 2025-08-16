@@ -1,16 +1,29 @@
+import { db } from '../db';
+import { gameSessionsTable } from '../db/schema';
 import { type CreateGameSessionInput, type GameSession } from '../schema';
 
-export async function createGameSession(input: CreateGameSessionInput): Promise<GameSession> {
-    // This is a placeholder declaration! Real code should be implemented here.
-    // The goal of this handler is to create a new game session for a player
-    // and persist it in the database, initializing with default values.
-    return Promise.resolve({
-        id: 1, // Placeholder ID
+export const createGameSession = async (input: CreateGameSessionInput): Promise<GameSession> => {
+  try {
+    // Insert new game session record
+    const result = await db.insert(gameSessionsTable)
+      .values({
         player_name: input.player_name,
         total_score: 0,
         questions_answered: 0,
-        correct_answers: 0,
-        started_at: new Date(),
-        ended_at: null
-    } as GameSession);
-}
+        correct_answers: 0
+        // started_at and ended_at will be handled by database defaults
+      })
+      .returning()
+      .execute();
+
+    // Return the created game session
+    const session = result[0];
+    return {
+      ...session,
+      ended_at: session.ended_at // Will be null as expected
+    };
+  } catch (error) {
+    console.error('Game session creation failed:', error);
+    throw error;
+  }
+};

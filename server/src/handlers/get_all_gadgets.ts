@@ -1,9 +1,16 @@
+import { db } from '../db';
+import { gadgetsTable } from '../db/schema';
 import { type Gadget } from '../schema';
 
-export async function getAllGadgets(): Promise<Gadget[]> {
-    // This is a placeholder declaration! Real code should be implemented here.
-    // The goal of this handler is to fetch all Doraemon gadgets from the database
-    // for reference or admin purposes. This can be used to see what gadgets
-    // are available in the quiz game.
-    return Promise.resolve([] as Gadget[]);
-}
+export const getAllGadgets = async (): Promise<Gadget[]> => {
+  try {
+    const results = await db.select()
+      .from(gadgetsTable)
+      .execute();
+
+    return results;
+  } catch (error) {
+    console.error('Failed to fetch gadgets:', error);
+    throw error;
+  }
+};

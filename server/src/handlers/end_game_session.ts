@@ -1,16 +1,27 @@
+import { db } from '../db';
+import { gameSessionsTable } from '../db/schema';
 import { type EndGameSessionInput, type GameSession } from '../schema';
+import { eq } from 'drizzle-orm';
 
-export async function endGameSession(input: EndGameSessionInput): Promise<GameSession> {
-    // This is a placeholder declaration! Real code should be implemented here.
-    // The goal of this handler is to mark a game session as completed
-    // by setting the ended_at timestamp and returning the final session data.
-    return Promise.resolve({
-        id: input.session_id,
-        player_name: "Player", // Placeholder - should fetch from database
-        total_score: 0,
-        questions_answered: 0,
-        correct_answers: 0,
-        started_at: new Date(),
-        ended_at: new Date() // Set current timestamp when ending
-    } as GameSession);
-}
+export const endGameSession = async (input: EndGameSessionInput): Promise<GameSession> => {
+  try {
+    // Update the game session to set the ended_at timestamp
+    const result = await db.update(gameSessionsTable)
+      .set({
+        ended_at: new Date()
+      })
+      .where(eq(gameSessionsTable.id, input.session_id))
+      .returning()
+      .execute();
+
+    if (result.length === 0) {
+      throw new Error(`Game session with id ${input.session_id} not found`);
+    }
+
+    // Return the updated session data
+    return result[0];
+  } catch (error) {
+    console.error('Game session end failed:', error);
+    throw error;
+  }
+};
