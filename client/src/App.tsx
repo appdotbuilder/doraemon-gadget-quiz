@@ -146,14 +146,14 @@ function App() {
 
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-100 via-cyan-50 to-blue-200 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-red-100 via-rose-50 to-red-200 p-4">
       <div className="container mx-auto max-w-4xl">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-blue-800 mb-2">
+          <h1 className="text-4xl font-bold text-red-800 mb-2">
             🤖 Doraemon's Secret Gadgets Quiz! 🎮
           </h1>
-          <p className="text-blue-600">Test your knowledge of Doraemon's amazing inventions!</p>
+          <p className="text-red-600">Test your knowledge of Doraemon's amazing inventions!</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
